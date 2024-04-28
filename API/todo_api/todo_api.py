@@ -9,7 +9,7 @@ todo_router = APIRouter(prefix="/todos", tags=["Управление задач�
 
 
 # Отправка запроса на создание задачи
-@todo_router.post("/", response_model=Todo)
+@todo_router.post("/todos/create_todo")
 async def create_todo(token: str, db: Session = Depends(get_db)):
     # Проверка токена
     payload = verify_token(token)
