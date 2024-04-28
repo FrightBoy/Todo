@@ -36,3 +36,19 @@ def delete_todo_database(todo_id):
     db.commit()
     return "Todo deleted"
 
+
+def change_todo_info_database(todo_id, change_info, new_data):
+    db = next(get_db())
+    all_info = db.query(Todo).filter_by(id=todo_id).first()
+    if all_info:
+        if change_info == "tittle":
+            all_info.tittle = new_data
+        elif change_info == "description":
+            all_info.description = new_data
+        elif change_info == "is_complete":
+            all_info.is_complete = new_data
+        elif change_info == "due_date":
+            all_info.due_date = new_data
+        db.commit()
+        return "Info updated"
+    return "ToDo not found"

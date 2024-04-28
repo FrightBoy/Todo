@@ -33,8 +33,8 @@ async def register_user(user_model: User):
     if mail_validation:
         if check:
             try:
-                reg_user = register_user_database(**user_data)
-                return {"status": 1, "user_id": reg_user}
+                registration = register_user_database(**user_data)
+                return {"status": 1, "user_id": registration}
             except Exception as e:
                 return {"status": 0, "message":  e}
     else:
@@ -44,8 +44,8 @@ async def register_user(user_model: User):
 # получение данных о пользователе
 @user_router.get("/api/user")
 async def get_user(user_id: int):
-    exact_user = profile_info_database(user_id=user_id)
-    return {"status": 1, "message": exact_user}
+    get_him = profile_info_database(user_id=user_id)
+    return {"status": 1, "message": get_him}
 
 
 # вход в аккаунт
@@ -55,8 +55,8 @@ async def login_user(email: str, password: str):
     if mail_validator:
         login_checker = check_user_password_database(email=email, password=password)
         if login_checker:
-            login_user_database(email=email)
-            return {"status": 1, "message": login_checker}
+            login = login_user_database(email=email)
+            return {"status": 1, "message": login}
         return {"status": 0, "message": login_checker}
     return {"status": 0, "message": "Invalid email"}
 
@@ -64,5 +64,5 @@ async def login_user(email: str, password: str):
 # запрос на изменение информации о юзере
 @user_router.put("/api/change_profile")
 async def change_user_profile(user_id: int, change_info: str, new_data: str):
-    data = change_user_info_database(user_id=user_id, change_info=change_info, new_data=new_data)
-    return {"status": 1, "message": data}
+    change = change_user_info_database(user_id=user_id, change_info=change_info, new_data=new_data)
+    return {"status": 1, "message": change}
