@@ -9,20 +9,20 @@ user_router = APIRouter(prefix='/users', tags=['Управление польз�
 
 regex = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
 
-
+# проверка валидности email
 def mail_checker(email):
     if re.fullmatch(regex, email):
         return True
     else:
         return False
 
-
+#
 class User(BaseModel):
     name: str
     email: str
     password: str
 
-
+# запрос на регистрацию нового пользователя
 @user_router.post("/api/registration")
 async def register_user(user_model: User):
     user_data = dict(user_model)

@@ -5,7 +5,7 @@ SECRET_KEY = "AnalSex_With_niggasAndFellas/2332.-minf9emf0e,mfjt8mujtf-utu-8kt-u
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 300
 
-
+# Функция для создания токена
 def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -13,7 +13,7 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-
+# Функция для проверки токена
 def verify_token(token: str):
     try:
         payload = jwt.decode(payload=token, key=SECRET_KEY, algorithms=[ALGORITHM])

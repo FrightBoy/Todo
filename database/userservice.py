@@ -59,7 +59,7 @@ def change_user_info_database(user_id, change_info, new_data):
         return "Info updated"
     return "User not found"
 
-
+# Logout for user
 def login_user_db(email):
     db = next(get_db())
     login = db.query(User).filter_by(email=email).first()

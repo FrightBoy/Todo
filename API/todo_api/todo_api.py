@@ -13,7 +13,7 @@ class TodoModel(BaseModel):
     description: str
     due_date: datetime
 
-
+# запрос на регистрацию нового пользователя
 @todo_router.post("/create_todo")
 async def create_todo(todo_model: TodoModel, db: Session = Depends(get_db)):
     todo_info = dict(todo_model)
@@ -49,7 +49,6 @@ async def update_todo(todo_id: int, todo_model: TodoModel, db: Session = Depends
     todo.title = todo_model.title
     todo.description = todo_model.description
     todo.due_date = todo_model.due_date
-    db.commit()
     return {"message": "Задача обновлена успешно"}
 
 
@@ -59,6 +58,4 @@ async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
     todo = db.query(Todo).filter(Todo.id == todo_id).first()
     if todo is None:
         raise HTTPException(status_code=404, detail="Задача не найдена")
-    db.delete(todo)
-    db.commit()
     return {"message": "Задача удалена успешно"}
