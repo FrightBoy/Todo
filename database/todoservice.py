@@ -27,8 +27,8 @@ def get_exact_todo_database(db: Session, todo_id: int):
 
 
 # Функция для обновления задачи
-def update_todo():
-    todo =
+def update_todo(db: Session, todo_id: int, title: str, description: str, due_date: str, is_complete: bool):
+    todo = get_exact_todo_database(db, todo_id)
     if todo:
         todo.title = title
         todo.description = description
@@ -36,6 +36,8 @@ def update_todo():
         todo.is_complete = is_complete
         db.commit()
         return todo
+    else:
+        return "Задача не найдена"
 
 
 # Функция для удаления задачи
@@ -44,4 +46,6 @@ def delete_todo(db: Session, todo_id: int):
     if todo:
         db.delete(todo)
         db.commit()
-        return "Deleted Successfully"
+        return "Удалена успешно"
+    else:
+        return "Задача не найдена"
