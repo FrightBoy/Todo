@@ -35,3 +35,4 @@ def delete_todo_database(todo_id):
     db.query(Todo).filter_by(id=todo_id).delete()
     db.commit()
     return "Todo deleted"
+
