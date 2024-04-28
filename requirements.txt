@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+regex
+sqlalchemy
+jwt
+python-multipart
+psycopg2
+passlib
