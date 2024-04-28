@@ -1,13 +1,13 @@
-from fastapi import Request, APIRouter
+from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List, Dict
 from database.userservice import (register_user_database, check_user_database, check_user_password_database,
-                                  change_user_info_database, profile_info_database, login_user_db)
+                                  change_user_info_database, profile_info_database, login_user_database)
 
 import re
 user_router = APIRouter(prefix='/users', tags=['Управление пользователями'])
 
 regex = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+
 
 # проверка валидности email
 def mail_checker(email):
@@ -16,11 +16,13 @@ def mail_checker(email):
     else:
         return False
 
+
 #
 class User(BaseModel):
     name: str
     email: str
     password: str
+
 
 # запрос на регистрацию нового пользователя
 @user_router.post("/api/registration")
@@ -53,7 +55,7 @@ async def login_user(email: str, password: str):
     if mail_validator:
         login_checker = check_user_password_database(email=email, password=password)
         if login_checker:
-            login_user_db(email=email)
+            login_user_database(email=email)
             return {"status": 1, "message": login_checker}
         return {"status": 0, "message": login_checker}
     return {"status": 0, "message": "Invalid email"}

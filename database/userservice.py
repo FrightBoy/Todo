@@ -44,7 +44,7 @@ def profile_info_database(user_id):
     return "User not found"
 
 
-# Login for user
+# change user info
 def change_user_info_database(user_id, change_info, new_data):
     db = next(get_db())
     all_info = db.query(User).filter_by(id=user_id).first()
@@ -59,8 +59,9 @@ def change_user_info_database(user_id, change_info, new_data):
         return "Info updated"
     return "User not found"
 
-# Logout for user
-def login_user_db(email):
+
+# Login for user
+def login_user_database(email):
     db = next(get_db())
     login = db.query(User).filter_by(email=email).first()
     if login:

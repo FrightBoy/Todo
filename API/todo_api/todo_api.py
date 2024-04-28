@@ -1,61 +1,42 @@
-from datetime import datetime, timedelta
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from database import get_db, todoservice
-from database.models import Todo
+from fastapi import APIRouter
 from pydantic import BaseModel
+from database.todoservice import (create_todo_database,
+                                  get_all_todos_database, get_exact_todo_database, delete_todo_database)
 
-todo_router = APIRouter(prefix="/todos", tags=["Управление задачами"])
+
+todo_router = APIRouter(prefix='/todos', tags=['Управление задачами'])
 
 
-class TodoModel(BaseModel):
+class Todo(BaseModel):
     title: str
     description: str
-    due_date: datetime
-
-# запрос на регистрацию нового пользователя
-@todo_router.post("/create_todo")
-async def create_todo(todo_model: TodoModel, db: Session = Depends(get_db)):
-    todo_info = dict(todo_model)
-    todo = Todo(**todo_info)
-    db.add(todo)
-    db.commit()
-    return {"message": "Задача создана успешно"}
+    due_date: int
+    is_complete: bool = False
 
 
-# получение всех задач
-@todo_router.get("/get_all_todos")
-async def get_all_todos(db: Session = Depends(get_db)):
-    todos = db.query(Todo).all()
-    return [{"id": todo.id, "title": todo.title, "description": todo.description, "due_date": todo.due_date} for todo in
-            todos]
+@todo_router.post("/api/create-todo")
+async def create_todo(todo_model: Todo):
+    todo_data = dict(todo_model)
+    try:
+        new_todo = create_todo_database(**todo_data)
+        return {"status": 1, "message": new_todo}
+    except Exception as e:
+        return {"status": 0, "message":  e}
 
 
-# получение конкретной задачи
-@todo_router.get("/get_exact_todo/{todo_id}")
-async def get_exact_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo = db.query(Todo).filter(Todo.id == todo_id).first()
-    if todo is None:
-        raise HTTPException(status_code=404, detail="Задача не найдена")
-    return {"id": todo.id, "title": todo.title, "description": todo.description, "due_date": todo.due_date}
+@todo_router.get("/api/todos")
+async def get_all_todos():
+    all_todos = get_all_todos_database(owner_id=1)
+    return {"status": 1, "message": all_todos}
 
 
-# обновление задачи
-@todo_router.put("/update_todo/{todo_id}")
-async def update_todo(todo_id: int, todo_model: TodoModel, db: Session = Depends(get_db)):
-    todo = db.query(Todo).filter(Todo.id == todo_id).first()
-    if todo is None:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    todo.title = todo_model.title
-    todo.description = todo_model.description
-    todo.due_date = todo_model.due_date
-    return {"message": "Задача обновлена успешно"}
+@todo_router.get("/api/todo{todo_id}")
+async def get_exact_todo(todo_id: int):
+    exact_todo = get_exact_todo_database(todo_id=todo_id)
+    return {"status": 1, "message": exact_todo}
 
 
-# удаление задачи
-@todo_router.delete("/delete_todo/{todo_id}")
-async def delete_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo = db.query(Todo).filter(Todo.id == todo_id).first()
-    if todo is None:
-        raise HTTPException(status_code=404, detail="Задача не найдена")
-    return {"message": "Задача удалена успешно"}
+@todo_router.delete("/api/todo-removing")
+async def delete_todo(todo_id: int):
+    delete_todo_database(todo_id=todo_id)
+    return {"status": 1, "message": "Todo deleted"}
