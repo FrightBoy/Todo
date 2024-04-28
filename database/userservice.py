@@ -60,9 +60,9 @@ def change_user_info_database(user_id, change_info, new_data):
     return "User not found"
 
 
-def login_user_db(email, password):
+def login_user_db(email):
     db = next(get_db())
-    login = db.query(User).filter_by(email=email, password=password).first()
+    login = db.query(User).filter_by(email=email).first()
     if login:
         token_data = {"user_id": login.id}
         access_token_data = create_access_token(token_data)

@@ -50,10 +50,10 @@ async def get_user(user_id: int):
 @user_router.post("/api/user")
 async def login_user(email: str, password: str):
     mail_validator = mail_checker(email)
-    login = login_user_db(email=email, password=password)
     if mail_validator:
         login_checker = check_user_password_database(email=email, password=password)
-        if login_checker.isdigit():
+        if login_checker:
+            login_user_db(email=email)
             return {"status": 1, "message": login_checker}
         return {"status": 0, "message": login_checker}
     return {"status": 0, "message": "Invalid email"}
