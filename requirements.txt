@@ -3,7 +3,7 @@ uvicorn
 pydantic
 regex
 sqlalchemy
-jwt
+pyjwt
 python-multipart
 psycopg2
 passlib

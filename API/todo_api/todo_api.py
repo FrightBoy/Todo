@@ -24,7 +24,7 @@ async def create_todo(token: str, db: Session = Depends(get_db)):
 
 # Получение списка задач
 @todo_router.get("/", response_model=list[Todo])
-async def read_todos(token: str, db: Session = Depends(get_db)):
+async def get_all_todos(token: str, db: Session = Depends(get_db)):
     # Проверка токена
     payload = verify_token(token)
     if payload == "error":
@@ -38,7 +38,7 @@ async def read_todos(token: str, db: Session = Depends(get_db)):
 
 # Получение конкретной задачи
 @todo_router.get("/{todo_id}", response_model=Todo)
-async def read_todo(todo_id: int, token: str, db: Session = Depends(get_db)):
+async def get_exact_todo(todo_id: int, token: str, db: Session = Depends(get_db)):
     # Проверка токена
     payload = verify_token(token)
     if payload == "error":
