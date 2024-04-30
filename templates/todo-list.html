@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To-Do List</title>
 
+    <!-- Стили для видео-фона -->
     <style>
-        /* Стили для видео-фона */
         body {
             margin: 0;
             padding: 0;
@@ -33,7 +33,7 @@
 
         .content {
             z-index: 1;
-            color: #fff;
+            color: #1b6acc; /* Темно-синий цвет текста */
             text-align: center;
         }
 
@@ -49,7 +49,7 @@
             right: 0;
             bottom: 0;
             width: 250px;
-            background-color: #333;
+            background-color: rgba(81, 81, 81, 0); /* Прозрачный цвет */
             padding: 20px;
             color: white;
         }
@@ -60,7 +60,7 @@
         }
 
         .sidebar li {
-            margin-bottom: 10px;
+            margin-bottom: 0px; /* Увеличиваем расстояние между элементами */
         }
 
         .sidebar a {
@@ -69,10 +69,75 @@
             font-size: 18px;
         }
 
+        .sidebar a:last-child { /* Добавляем стиль для последнего элемента списка */
+            margin-bottom: 50px; /* Опускаем последний элемент ниже */
+        }
+
+        .sidebar a.login-form {
+            display: block; /* Превращаем ссылку в блочный элемент */
+            margin-top: 20px; /* Отступ сверху для "Login Form" */
+        }
+
         .sidebar a:hover {
             color: #ddd;
+            background-color: #333; /* Цвет фона при наведении */
         }
+
+        /* Стили для задач */
+        .task {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #aaa;
+        }
+
+        .task input[type="checkbox"] {
+            transform: scale(1.5); /* Увеличиваем размер чекбокса */
+        }
+
+        .task label {
+            margin-left: 10px;
+            font-size: 18px;
+            color: #1b6acc; /* Темно-синий цвет текста */
+            white-space: pre-wrap; /* Перенос строк */
+            word-wrap: break-word; /* Перенос длинных слов на следующую строку */
+        }
+
+        .task.done label {
+            text-decoration: line-through; /* Зачеркиваем текст задачи */
+            color: #5cb85c; /* Зеленый цвет для выполненной задачи */
+        }
+
+        /* Стили для кнопки удаления */
+.delete-btn {
+    padding: 4px 8px;
+    background-color: #444; /* Темный фон по умолчанию */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Плавное изменение стилей */
+}
+
+.delete-btn:hover {
+    background-color: #ff4d4d; /* Красный фон при наведении */
+    color: white; /* Белый текст при наведении */
+}
+
+.delete-btn:active {
+    background-color: #ff4d4d; /* Красный фон при нажатии */
+    color: white; /* Белый текст при нажатии */
+}
     </style>
+
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700;1,200&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <link href="../static/home_page/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/home_page/css/bootstrap-icons.css" rel="stylesheet">
+    <link href="../static/home_page/css/tooplate-kool-form-pack.css" rel="stylesheet">
 </head>
 <body>
     <!-- Видео -->
@@ -87,7 +152,7 @@
         <!-- Форма для добавления задач -->
         <form id="todoForm">
             <div class="flex gap-2 mt-4">
-                <input type="text" id="taskInput" class="w-full h-10 rounded border-gray-300 focus:border-[#63b3ed] focus:ring focus:ring-[#63b3ed] focus:ring-opacity-50" placeholder="Enter task">
+                <input type="text" id="taskInput" class="w-full h-10 rounded border-gray-300 focus:border-[#63b3ed] focus:ring focus:ring-[#63b3ed] focus:ring-opacity-50" placeholder="Enter task" oninput="changeTextColor(this)">
                 <input type="text" id="timeInput" class="w-full h-10 rounded border-gray-300 focus:border-[#63b3ed] focus:ring focus:ring-[#63b3ed] focus:ring-opacity-50" placeholder="Enter time">
                 <button type="submit" class="px-4 py-2 bg-[#4b6cb7] text-white rounded-md hover:bg-[#1d4ed8] focus:outline-none focus:ring focus:ring-[#63b3ed] focus:ring-opacity-50">Add Task</button>
             </div>
@@ -98,11 +163,10 @@
 
     <!-- Боковая панель -->
     <div class="sidebar">
-        <h2>Navigation</h2>
         <ul>
-            <li><a href="/login">Login Form</a></li>
-            <li><a href="/register">Create an account</a></li>
-            <li><a href="/">Home</a></li>
+            <li><a href="/" class="highlight">Home</a></li>
+            <li><a href="/register" class="highlight">Create an account</a></li>
+            <li><a href="/login" class="highlight">Login Form</a></li>
         </ul>
     </div>
 
@@ -124,24 +188,23 @@
                 return;
             }
             var li = document.createElement("li");
-            var div = document.createElement("div");
-            div.classList.add("flex", "gap-2");
-            var span1 = document.createElement("span");
-            span1.classList.add("w-9/12", "h-12", "bg-[#e0ebff]", "rounded-[7px]", "flex", "justify-start", "items-center", "px-3");
-            var span2 = document.createElement("span");
-            span2.classList.add("w-1/4", "h-12", "bg-[#e0ebff]", "rounded-[7px]", "flex", "justify-center", "text-sm", "text-[#5b7a9d]", "font-semibold", "items-center");
-            var deleteBtn = document.createElement("button"); // Создаем кнопку удаления
-            deleteBtn.innerText = "Delete";
-            deleteBtn.classList.add("px-3", "py-1", "bg-red-500", "text-white", "rounded-md", "hover:bg-red-600", "focus:outline-none", "focus:ring", "focus:ring-red-400", "focus:ring-opacity-50");
-            deleteBtn.onclick = function() {
-                deleteTask(li); // Вызываем функцию удаления при клике на кнопку
+            li.classList.add("task"); // Добавляем класс "task" для стилизации задачи
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.onclick = function() {
+                toggleDone(li, checkbox); // Вызываем функцию отметки выполненной задачи при клике на чекбокс
             };
-            span1.innerHTML = '<span id="check' + todoList.children.length + '" class="w-7 h-7 bg-white rounded-full border border-white transition-all cursor-pointer hover:border-[#36d344] flex justify-center items-center" onclick="toggleDone(' + todoList.children.length + ')"><i class="text-white fa fa-check"></i></span><strike id="strike' + todoList.children.length + '" class="strike_none text-sm ml-4 text-[#5b7a9d] font-semibold">' + task + '</strike>';
-            span2.textContent = time;
-            div.appendChild(span1);
-            div.appendChild(span2);
-            div.appendChild(deleteBtn); // Добавляем кнопку удаления в div
-            li.appendChild(div);
+            var label = document.createElement("label");
+            label.textContent = task + ' (' + time + ')';
+            var deleteBtn = document.createElement("button");
+            deleteBtn.innerText = "Delete";
+            deleteBtn.classList.add("delete-btn"); // Используем новый класс для кнопки
+            deleteBtn.onclick = function() {
+                deleteTask(li);
+            };
+            li.appendChild(checkbox);
+            li.appendChild(label);
+            li.appendChild(deleteBtn);
             todoList.appendChild(li);
             taskInput.value = "";
             timeInput.value = "";
@@ -154,17 +217,30 @@
         });
 
         // Функция для отметки выполненной задачи
-        function toggleDone(id) {
-            var checked_green = document.getElementById("check" + id);
-            checked_green.classList.toggle('green');
-            var strike_unstrike = document.getElementById("strike" + id);
-            strike_unstrike.classList.toggle('strike_none');
+        function toggleDone(task, checkbox) {
+            if (checkbox.checked) {
+                task.classList.add('done'); // Добавляем класс 'done' к родительскому элементу задачи
+            } else {
+                task.classList.remove('done'); // Удаляем класс 'done' из родительского элемента задачи
+            }
         }
 
         // Функция для удаления задачи
         function deleteTask(task) {
             task.remove();
         }
+
+        // Функция для изменения цвета текста при вводе
+        function changeTextColor(input) {
+            input.style.color = "#1b6acc"; // Темно-синий цвет текста
+        }
     </script>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="../static/home_page/js/jquery.min.js"></script>
+    <script src="../static/home_page/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/home_page/js/countdown.js"></script>
+    <script src="../static/home_page/js/init.js"></script>
+
 </body>
 </html>
